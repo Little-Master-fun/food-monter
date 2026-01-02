@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>食物监控 - Food Monitor</title>
     <style>
+      @font-face {
+        font-family: "ZhanKuKuaiLeTi";
+        src: url("./font/ZhanKuKuaiLeTi2016XiuDingBan-1.ttf") format("truetype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -38,6 +45,8 @@
         font-size: 1.8rem;
         color: #333;
         font-weight: 600;
+        font-family: "ZhanKuKuaiLeTi", -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, sans-serif;
       }
 
       .menu-icon {
@@ -163,13 +172,20 @@
       .meal-card {
         background: #f5f5f5;
         border-radius: 15px;
-        min-height: 200px;
-        min-width: 50%;
+        min-height: 250px;
+        min-width: 180px;
         flex-shrink: 0;
         display: flex;
         flex-direction: column;
         overflow: hidden;
         padding: 0;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .meal-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       }
 
       .meal-card.has-image {
@@ -361,6 +377,181 @@
         border-bottom: none;
       }
 
+      /* 食物详情模态框 */
+      .food-detail-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+      }
+
+      .food-detail-modal.show {
+        display: flex;
+      }
+
+      .food-detail-content {
+        background: white;
+        border-radius: 20px;
+        max-width: 500px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+        animation: modalSlideIn 0.3s ease;
+      }
+
+      @keyframes modalSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .food-detail-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.1);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #666;
+        z-index: 10;
+        transition: all 0.2s;
+      }
+
+      .food-detail-close:hover {
+        background: rgba(0, 0, 0, 0.2);
+        transform: rotate(90deg);
+      }
+
+      .food-detail-image {
+        width: 100%;
+        height: 250px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 20px 20px 0 0;
+      }
+
+      .food-detail-body {
+        padding: 25px;
+      }
+
+      .food-detail-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #2d5a3d;
+        margin-bottom: 10px;
+      }
+
+      .food-detail-time {
+        font-size: 0.85rem;
+        color: #999;
+        margin-bottom: 15px;
+      }
+
+      .food-detail-description {
+        font-size: 0.95rem;
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: #f9f9f9;
+        border-radius: 10px;
+      }
+
+      .food-detail-section {
+        margin-bottom: 20px;
+      }
+
+      .food-detail-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .nutrition-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .nutrition-item {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .nutrition-label {
+        font-size: 0.9rem;
+        color: #666;
+      }
+
+      .nutrition-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #2d5a3d;
+      }
+
+      .weight-info {
+        background: linear-gradient(135deg, #40672b 0%, #2d5a3d 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .weight-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+
+      .weight-label {
+        font-size: 0.85rem;
+        opacity: 0.9;
+      }
+
+      .vitamins-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .vitamin-tag {
+        background: #e8ecd4;
+        color: #2d5a3d;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
       @media (max-width: 768px) {
         .header h1 {
           font-size: 1.5rem;
@@ -373,6 +564,14 @@
         .meals-grid {
           grid-template-columns: 1fr;
         }
+
+        .nutrition-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .food-detail-content {
+          margin: 10px;
+        }
       }
     </style>
   </head>
@@ -381,11 +580,11 @@
       <!-- 顶部标题 -->
       <div class="header">
         <h1>Hi, <span id="userName">毕钰</span></h1>
-        <div class="menu-icon">
+        <!-- <div class="menu-icon">
           <span></span>
           <span></span>
           <span></span>
-        </div>
+        </div> -->
       </div>
 
       <!-- 主内容区 -->
@@ -529,6 +728,69 @@
       </div>
     </div>
 
+    <!-- 食物详情模态框 -->
+    <div class="food-detail-modal" id="foodDetailModal">
+      <div class="food-detail-content">
+        <button class="food-detail-close" onclick="closeFoodDetail()">×</button>
+        <div class="food-detail-image" id="foodDetailImage"></div>
+        <div class="food-detail-body">
+          <h2 class="food-detail-title" id="foodDetailTitle">食物名称</h2>
+          <div class="food-detail-time" id="foodDetailTime">
+            2025年12月25日 11:35
+          </div>
+
+          <div class="weight-info">
+            <div class="weight-value" id="foodDetailWeight">0g</div>
+            <div class="weight-label">估计重量</div>
+          </div>
+
+          <div class="food-detail-section">
+            <div class="food-detail-section-title">食物描述</div>
+            <div class="food-detail-description" id="foodDetailDescription">
+              暂无描述信息
+            </div>
+          </div>
+
+          <div class="food-detail-section">
+            <div class="food-detail-section-title">营养成分 (总量)</div>
+            <div class="nutrition-grid">
+              <div class="nutrition-item">
+                <span class="nutrition-label">蛋白质</span>
+                <span class="nutrition-value" id="detailProtein">0g</span>
+              </div>
+              <div class="nutrition-item">
+                <span class="nutrition-label">碳水化合物</span>
+                <span class="nutrition-value" id="detailCarbs">0g</span>
+              </div>
+              <div class="nutrition-item">
+                <span class="nutrition-label">脂肪</span>
+                <span class="nutrition-value" id="detailFat">0g</span>
+              </div>
+              <div class="nutrition-item">
+                <span class="nutrition-label">热量</span>
+                <span class="nutrition-value" id="detailCalories">0 kcal</span>
+              </div>
+              <div class="nutrition-item">
+                <span class="nutrition-label">膳食纤维</span>
+                <span class="nutrition-value" id="detailFiber">0g</span>
+              </div>
+              <div class="nutrition-item">
+                <span class="nutrition-label">钠</span>
+                <span class="nutrition-value" id="detailSodium">0mg</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="food-detail-section">
+            <div class="food-detail-section-title">维生素</div>
+            <div class="vitamins-list" id="foodDetailVitamins">
+              <span class="vitamin-tag">暂无数据</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       const API_BASE_URL = "http://localhost:8001";
       // "https://api.food-monitor.0nlinetech.littlemaster.fun";
@@ -650,10 +912,23 @@
 
         // 填充本月日期
         const today = new Date();
+        today.setHours(0, 0, 0, 0); // 重置时间为当天开始
+
+        // 计算30天前的日期
+        const thirtyDaysAgo = new Date(today);
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+
         for (let i = 1; i <= daysInMonth; i++) {
           const day = document.createElement("div");
+          const currentDay = new Date(year, month, i);
+          currentDay.setHours(0, 0, 0, 0);
+
           day.className = "calendar-day";
           day.textContent = i;
+
+          // 判断日期是否在过去30天内（包括今天）
+          const isWithinRange =
+            currentDay >= thirtyDaysAgo && currentDay <= today;
 
           // 标记今天
           if (
@@ -664,11 +939,16 @@
             day.classList.add("today");
           }
 
-          // 添加点击事件
-          day.addEventListener("click", () => {
-            selectedDate = new Date(year, month, i);
-            loadDayData(selectedDate);
-          });
+          // 如果不在范围内，设置为禁用
+          if (!isWithinRange) {
+            day.classList.add("disabled");
+          } else {
+            // 只为在范围内的日期添加点击事件
+            day.addEventListener("click", () => {
+              selectedDate = new Date(year, month, i);
+              loadDayData(selectedDate);
+            });
+          }
 
           calendarDays.appendChild(day);
         }
@@ -715,6 +995,113 @@
         }
       }
 
+      // 显示食物详情
+      async function showFoodDetail(meal) {
+        const modal = document.getElementById("foodDetailModal");
+        const imageUrl = `${API_BASE_URL}/api/image/${meal.filename}`;
+
+        // 显示模态框（先显示加载状态）
+        modal.classList.add("show");
+
+        try {
+          // 调用metadata接口获取完整的详细数据
+          const response = await fetch(
+            `${API_BASE_URL}/api/image/${meal.filename}/metadata`
+          );
+          const data = await response.json();
+
+          if (data.status === "success") {
+            const metadata = data.metadata;
+            const uploadTime = new Date(metadata.upload_time);
+            const foodRec = metadata.food_recognition || {};
+
+            // 设置图片
+            document.getElementById(
+              "foodDetailImage"
+            ).style.backgroundImage = `url(${imageUrl})`;
+
+            // 设置基本信息
+            document.getElementById("foodDetailTitle").textContent =
+              foodRec.food_name || "未识别";
+            document.getElementById(
+              "foodDetailTime"
+            ).textContent = `${uploadTime.getFullYear()}年${
+              uploadTime.getMonth() + 1
+            }月${uploadTime.getDate()}日 ${uploadTime.toLocaleTimeString(
+              "zh-CN",
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            )}`;
+
+            // 设置重量
+            document.getElementById("foodDetailWeight").textContent =
+              (foodRec.estimated_weight || 0).toFixed(0) + "g";
+
+            // 设置描述
+            document.getElementById("foodDetailDescription").textContent =
+              foodRec.description || "暂无描述信息";
+
+            // 设置营养成分（总量）
+            const totalNutrition = foodRec.total_nutrition || {};
+            document.getElementById("detailProtein").textContent =
+              (totalNutrition.protein || 0).toFixed(1) + "g";
+            document.getElementById("detailCarbs").textContent =
+              (totalNutrition.carbohydrates || 0).toFixed(1) + "g";
+            document.getElementById("detailFat").textContent =
+              (totalNutrition.fat || 0).toFixed(1) + "g";
+            document.getElementById("detailCalories").textContent =
+              (totalNutrition.calories || 0).toFixed(0) + " kcal";
+            document.getElementById("detailFiber").textContent =
+              (totalNutrition.fiber || 0).toFixed(1) + "g";
+            document.getElementById("detailSodium").textContent =
+              (totalNutrition.sodium || 0).toFixed(0) + "mg";
+
+            // 设置维生素
+            const vitamins = foodRec.vitamins || [];
+            const vitaminsContainer =
+              document.getElementById("foodDetailVitamins");
+            if (vitamins.length > 0) {
+              vitaminsContainer.innerHTML = vitamins
+                .map((v) => `<span class="vitamin-tag">${v}</span>`)
+                .join("");
+            } else {
+              vitaminsContainer.innerHTML =
+                '<span class="vitamin-tag">暂无数据</span>';
+            }
+          } else {
+            // 如果接口返回失败，显示错误信息
+            document.getElementById("foodDetailTitle").textContent =
+              "获取详情失败";
+            document.getElementById("foodDetailDescription").textContent =
+              data.detail || "无法获取食物详细信息";
+          }
+        } catch (error) {
+          console.error("获取食物详情失败:", error);
+          document.getElementById("foodDetailTitle").textContent = "加载失败";
+          document.getElementById("foodDetailDescription").textContent =
+            "网络错误，请稍后重试";
+        }
+      }
+
+      // 关闭食物详情
+      function closeFoodDetail() {
+        const modal = document.getElementById("foodDetailModal");
+        modal.classList.remove("show");
+      }
+
+      // 点击模态框背景关闭
+      document.addEventListener("DOMContentLoaded", () => {
+        document
+          .getElementById("foodDetailModal")
+          .addEventListener("click", (e) => {
+            if (e.target.id === "foodDetailModal") {
+              closeFoodDetail();
+            }
+          });
+      });
+
       // 更新今日用餐
       function updateTodayMeals(foods) {
         const mealsGrid = document.getElementById("todayMeals");
@@ -724,9 +1111,7 @@
             <div class="meal-card">
               <div class="meal-time">暂无记录</div>
             </div>
-            <div class="meal-card">
-              <div class="meal-time">暂无记录</div>
-            </div>
+
           `;
           return;
         }
@@ -750,6 +1135,12 @@
             uploadTime.getMonth() + 1
           }月${uploadTime.getDate()}日 ${timeStr}</div>
           `;
+
+          // 添加点击事件显示详情
+          mealCard.addEventListener("click", () => {
+            showFoodDetail(meal);
+          });
+
           mealsGrid.appendChild(mealCard);
         });
       }
