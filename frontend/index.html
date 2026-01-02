@@ -3,11 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>老人饮食监控 - Food Monitor</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-    />
+    <title>食物监控 - Food Monitor</title>
     <style>
       * {
         margin: 0;
@@ -16,656 +12,814 @@
       }
 
       body {
-        font-family: "Comic Sans MS", "Segoe UI", sans-serif;
-        background: #ffd4e5;
-        background-image: radial-gradient(
-            circle at 20% 50%,
-            rgba(255, 182, 193, 0.4) 0%,
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 80% 80%,
-            rgba(173, 216, 230, 0.4) 0%,
-            transparent 50%
-          ),
-          radial-gradient(
-            circle at 40% 90%,
-            rgba(255, 218, 185, 0.4) 0%,
-            transparent 50%
-          );
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #fffed7 0%, #fcfac9 100%);
         min-height: 100vh;
-        padding: 20px;
+        padding: 0;
       }
 
       .container {
-        max-width: 1200px;
-        margin: 0 auto;
+        max-width: 100%;
+        height: 100vh;
+        overflow-y: auto;
       }
 
-      header {
-        text-align: center;
-        margin-bottom: 40px;
-        background: rgba(255, 255, 255, 0.3);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 30px;
-        padding: 30px;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      }
-
-      header h1 {
-        font-size: 3rem;
-        color: #ff6b9d;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px 0 #fff, 4px 4px 0 rgba(255, 107, 157, 0.3);
-      }
-
-      header p {
-        font-size: 1.2rem;
-        color: #ff8fab;
-      }
-
-      .gallery-section {
-        margin-top: 30px;
-      }
-
-      .gallery-header {
+      /* 顶部标题栏 */
+      .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 30px;
-        background: rgba(255, 255, 255, 0.3);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 20px;
         padding: 20px 30px;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        background: #fffed7;
       }
 
-      .gallery-title {
-        color: #ff6b9d;
+      .header h1 {
         font-size: 1.8rem;
-        font-weight: bold;
+        color: #333;
+        font-weight: 600;
       }
 
-      .image-count {
-        background: rgba(255, 255, 255, 0.5);
-        color: #ff6b9d;
-        padding: 10px 20px;
+      .menu-icon {
+        font-size: 1.5rem;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .menu-icon span {
+        width: 25px;
+        height: 3px;
+        background: #333;
+        border-radius: 2px;
+      }
+
+      /* 主内容区 */
+      .main-content {
+        padding: 20px 30px;
+      }
+
+      /* 日历区域 */
+      .calendar-section {
+        background: white;
         border-radius: 20px;
-        font-weight: bold;
-        border: 2px solid rgba(255, 255, 255, 0.8);
-      }
-
-      .gallery-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-        gap: 25px;
-      }
-
-      .image-card {
-        background: rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 20px;
-        overflow: hidden;
-        border: 3px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
         transition: all 0.3s ease;
       }
 
-      .image-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 40px rgba(255, 107, 157, 0.3);
-        border-color: #ff6b9d;
-      }
-
-      .image-wrapper {
-        width: 100%;
-        height: 250px;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.5);
-        position: relative;
-      }
-
-      .image-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-      }
-
-      .image-card:hover .image-wrapper img {
-        transform: scale(1.05);
-      }
-
-      .image-info {
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.3);
-      }
-
-      .image-filename {
-        font-weight: bold;
-        color: #ff6b9d;
-        margin-bottom: 12px;
-        font-size: 0.95rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .image-meta {
-        font-size: 0.85rem;
+      .calendar-header {
+        text-align: center;
+        margin-bottom: 20px;
         color: #666;
+        font-size: 0.9rem;
+      }
+
+      .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
         margin-bottom: 15px;
       }
 
-      .image-time {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        background: rgba(255, 255, 255, 0.6);
-        padding: 5px 10px;
-        border-radius: 15px;
-      }
-
-      .date-divider {
-        background: rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 15px;
-        padding: 15px 25px;
-        margin: 30px 0 20px;
-        border: 2px solid rgba(255, 255, 255, 0.6);
-        display: flex;
-        align-items: center;
-        gap: 10px;
-      }
-
-      .date-divider-text {
-        font-size: 1.1rem;
-        font-weight: bold;
-        color: #ff6b9d;
-      }
-
-      .date-divider-count {
-        background: rgba(255, 182, 193, 0.5);
-        padding: 4px 12px;
-        border-radius: 12px;
-        font-size: 0.9rem;
-        color: #ff6b9d;
-      }
-
-      .image-actions {
-        display: flex;
-        gap: 10px;
-      }
-
-      .btn-small {
-        flex: 1;
-        padding: 10px 15px;
-        border: none;
-        border-radius: 15px;
+      .calendar-day-header {
+        text-align: center;
         font-size: 0.85rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        font-weight: bold;
-        border: 2px solid transparent;
+        color: #999;
+        padding: 8px 0;
       }
 
-      .btn-view {
-        background: rgba(255, 182, 193, 0.6);
-        color: #ff6b9d;
-        border-color: rgba(255, 255, 255, 0.8);
+      .calendar-days-container {
+        max-height: 50px;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
       }
 
-      .btn-view:hover {
-        background: #ffb6c1;
-        transform: scale(1.05);
+      .calendar-days-container.expanded {
+        max-height: 400px;
       }
 
-      .btn-download {
-        background: rgba(173, 216, 230, 0.6);
-        color: #4a90e2;
-        border-color: rgba(255, 255, 255, 0.8);
-      }
-
-      .btn-download:hover {
-        background: #add8e6;
-        transform: scale(1.05);
-      }
-
-      .loading {
-        text-align: center;
-        padding: 60px;
-        color: #ff6b9d;
-        font-size: 1.2rem;
-        background: rgba(255, 255, 255, 0.3);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 20px;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-      }
-
-      .spinner {
-        border: 4px solid rgba(255, 182, 193, 0.3);
-        border-top: 4px solid #ff6b9d;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 20px;
-      }
-
-      .empty-state {
-        text-align: center;
-        padding: 80px 20px;
-        background: rgba(255, 255, 255, 0.3);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border-radius: 20px;
-        border: 2px solid rgba(255, 255, 255, 0.5);
-      }
-
-      .empty-state-icon {
-        font-size: 5rem;
-        margin-bottom: 20px;
-      }
-
-      .empty-state-text {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
-        color: #ff6b9d;
-      }
-
-      .empty-state-hint {
-        font-size: 1rem;
-        color: #ff8fab;
-      }
-
-      .notification {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: rgba(255, 255, 255, 0.4);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        padding: 20px 30px;
-        border-radius: 20px;
-        border: 2px solid rgba(255, 255, 255, 0.6);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        display: none;
-        align-items: center;
-        gap: 15px;
-        z-index: 1000;
-      }
-
-      .notification.show {
+      .calendar-day {
+        aspect-ratio: 1;
         display: flex;
-        animation: bounceIn 0.5s ease;
-      }
-
-      .notification.success {
-        border-left: 5px solid #ff6b9d;
-      }
-
-      .notification.error {
-        border-left: 5px solid #ff4757;
-      }
-
-      .notification-icon {
-        font-size: 1.5rem;
-      }
-
-      .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 182, 193, 0.5);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        z-index: 2000;
+        align-items: center;
         justify-content: center;
-        align-items: center;
-      }
-
-      .modal.show {
-        display: flex;
-      }
-
-      .modal-content {
-        max-width: 90%;
-        max-height: 90%;
-        position: relative;
-      }
-
-      .modal-content img {
-        max-width: 100%;
-        max-height: 90vh;
-        border-radius: 20px;
-        border: 5px solid white;
-        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
-      }
-
-      .modal-close {
-        position: absolute;
-        top: -50px;
-        right: -10px;
-        background: white;
-        color: #ff6b9d;
-        border: 3px solid #ff6b9d;
-        width: 45px;
-        height: 45px;
         border-radius: 50%;
-        font-size: 1.5rem;
         cursor: pointer;
-        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        color: #333;
+        transition: all 0.2s;
+      }
+
+      .calendar-day:hover {
+        background: #f0f0f0;
+      }
+
+      .calendar-day.today {
+        background: #2d5a3d;
+        color: white;
         font-weight: bold;
       }
 
-      .modal-close:hover {
-        background: #ff6b9d;
+      .calendar-day.disabled {
+        color: #ddd;
+        cursor: default;
+      }
+
+      .calendar-day.disabled:hover {
+        background: transparent;
+      }
+
+      /* 今日目录 */
+      .today-section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .meals-container {
+        overflow-x: auto;
+        overflow-y: hidden;
+        margin-bottom: 25px;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .meals-container::-webkit-scrollbar {
+        display: none;
+      }
+
+      .meals-grid {
+        display: flex;
+        gap: 15px;
+        padding-bottom: 10px;
+      }
+
+      .meal-card {
+        background: #f5f5f5;
+        border-radius: 15px;
+        min-height: 200px;
+        min-width: 50%;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding: 0;
+      }
+
+      .meal-card.has-image {
+        background: #40672b;
+      }
+
+      .meal-card-image {
+        flex: 1;
+        background-size: cover;
+        background-position: center;
+        border-radius: 15px;
+        min-height: 120px;
+      }
+
+      .meal-time {
+        font-size: 0.7rem;
         color: white;
-        transform: rotate(90deg);
+        background: #40672b;
+        padding: 10px 15px;
+        text-align: center;
       }
 
-      @keyframes spin {
-        to {
-          transform: rotate(360deg);
-        }
+      .meal-card:not(.has-image) .meal-time {
+        background: #f5f5f5;
+        color: #999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
       }
 
-      @keyframes bounceIn {
-        0% {
-          opacity: 0;
-          transform: scale(0.3) translateX(400px);
-        }
-        50% {
-          opacity: 1;
-          transform: scale(1.05);
-        }
-        70% {
-          transform: scale(0.9);
-        }
-        100% {
-          transform: scale(1);
-        }
+      /* 营养概览 */
+      .nutrition-section {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .nutrition-chart {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        height: 200px;
+        margin: 20px 0;
+      }
+
+      .nutrition-bar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        position: relative;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .nutrition-bar:hover {
+        transform: scale(1.05);
+      }
+
+      .bar-container {
+        width: 60%;
+        height: 180px;
+        display: flex;
+        align-items: flex-end;
+        background-color: #ffec668f;
+        border-radius: 50px;
+      }
+
+      /* 营养详情气泡 */
+      .nutrition-tooltip {
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-10px);
+        background: white;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        min-width: 160px;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 100;
+        pointer-events: none;
+      }
+
+      .nutrition-tooltip.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(-5px);
+      }
+
+      .nutrition-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 8px solid transparent;
+        border-top-color: white;
+      }
+
+      .tooltip-title {
+        font-weight: 600;
+        color: #2d5a3d;
+        margin-bottom: 10px;
+        font-size: 0.9rem;
+      }
+
+      .tooltip-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 6px;
+        font-size: 0.8rem;
+        color: #666;
+      }
+
+      .tooltip-value {
+        font-weight: 600;
+        color: #333;
+      }
+
+      .tooltip-percentage {
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 1px solid #f0f0f0;
+        text-align: center;
+        font-size: 0.85rem;
+        color: #2d5a3d;
+        font-weight: 600;
+      }
+
+      .bar {
+        width: 100%;
+        background: #2d5a3d;
+        border-radius: 50px;
+        transition: height 0.5s ease;
+      }
+
+      .bar.light {
+        background: #e8ecd4;
+      }
+
+      .bar-label {
+        font-size: 0.8rem;
+        color: #666;
+        text-align: center;
+      }
+
+      /* 推荐食物 */
+      .recommendations-section {
+        background: white;
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .food-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .food-table thead {
+        background: #f9f9f9;
+      }
+
+      .food-table th {
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.85rem;
+        color: #666;
+        border-bottom: 2px solid #f0f0f0;
+      }
+
+      .food-table td {
+        padding: 15px 12px;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 0.9rem;
+        color: #333;
+      }
+
+      .food-table tr:last-child td {
+        border-bottom: none;
       }
 
       @media (max-width: 768px) {
-        header h1 {
-          font-size: 2rem;
+        .header h1 {
+          font-size: 1.5rem;
         }
 
-        .gallery-grid {
-          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-          gap: 15px;
+        .main-content {
+          padding: 15px 20px;
         }
 
-        .notification {
-          left: 20px;
-          right: 20px;
+        .meals-grid {
+          grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <header>
-        <h1><i class="fas fa-utensils"></i> 老人饮食监控</h1>
-        <p><i class="fas fa-heart"></i> 关心每一餐 · 守护健康</p>
-      </header>
+      <!-- 顶部标题 -->
+      <div class="header">
+        <h1>Hi, <span id="userName">毕钰</span></h1>
+        <div class="menu-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
 
-      <!-- 图片展示区域 -->
-      <section class="gallery-section">
-        <div class="gallery-header">
-          <h2 class="gallery-title">
-            <i class="fas fa-history"></i> 历史用餐记录
-          </h2>
-          <div class="image-count" id="imageCount">
-            <i class="fas fa-calculator"></i> 共 0 餐
+      <!-- 主内容区 -->
+      <div class="main-content">
+        <!-- 日历 -->
+        <div class="calendar-section" id="calendarSection">
+          <div class="calendar-header" id="calendarHeader">December, 2025</div>
+          <div class="calendar-grid">
+            <div class="calendar-day-header">Mon</div>
+            <div class="calendar-day-header">Tue</div>
+            <div class="calendar-day-header">Wed</div>
+            <div class="calendar-day-header">Thu</div>
+            <div class="calendar-day-header">Fri</div>
+            <div class="calendar-day-header">Sat</div>
+            <div class="calendar-day-header">Sun</div>
+          </div>
+          <div class="calendar-days-container" id="calendarDaysContainer">
+            <div class="calendar-grid" id="calendarDays"></div>
           </div>
         </div>
-        <div id="galleryContainer">
-          <div class="loading">
-            <div class="spinner"></div>
-            加载中...
+
+        <!-- 今日目录 -->
+        <div class="today-section-title">今日目录</div>
+        <div class="meals-container">
+          <div class="meals-grid" id="todayMeals">
+            <div class="meal-card">
+              <div class="meal-time">暂无记录</div>
+            </div>
           </div>
         </div>
-      </section>
-    </div>
 
-    <!-- 通知弹窗 -->
-    <div class="notification" id="notification">
-      <div class="notification-icon"><i class="fas fa-check-circle"></i></div>
-      <div class="notification-message"></div>
-    </div>
+        <!-- 今日营养概览 -->
+        <div class="nutrition-section">
+          <div class="today-section-title">今日营养概览</div>
+          <div class="nutrition-chart">
+            <div class="nutrition-bar" data-nutrition="protein">
+              <div class="nutrition-tooltip" id="proteinTooltip">
+                <div class="tooltip-title">蛋白质</div>
+                <div class="tooltip-item">
+                  <span>已摄入:</span>
+                  <span class="tooltip-value" id="proteinActual">0g</span>
+                </div>
+                <div class="tooltip-item">
+                  <span>推荐量:</span>
+                  <span class="tooltip-value">60g</span>
+                </div>
+                <div class="tooltip-percentage" id="proteinPercent">0%</div>
+              </div>
+              <div class="bar-container">
+                <div class="bar" id="proteinBar" style="height: 0%"></div>
+              </div>
+              <div class="bar-label">蛋白质</div>
+            </div>
+            <div class="nutrition-bar" data-nutrition="carbs">
+              <div class="nutrition-tooltip" id="carbsTooltip">
+                <div class="tooltip-title">碳水化合物</div>
+                <div class="tooltip-item">
+                  <span>已摄入:</span>
+                  <span class="tooltip-value" id="carbsActual">0g</span>
+                </div>
+                <div class="tooltip-item">
+                  <span>推荐量:</span>
+                  <span class="tooltip-value">300g</span>
+                </div>
+                <div class="tooltip-percentage" id="carbsPercent">0%</div>
+              </div>
+              <div class="bar-container">
+                <div class="bar" id="carbsBar" style="height: 0%"></div>
+              </div>
+              <div class="bar-label">碳水化合物</div>
+            </div>
+            <div class="nutrition-bar" data-nutrition="vitamin">
+              <div class="nutrition-tooltip" id="vitaminTooltip">
+                <div class="tooltip-title">维生素</div>
+                <div class="tooltip-item">
+                  <span>已摄入:</span>
+                  <span class="tooltip-value" id="vitaminActual">0g</span>
+                </div>
+                <div class="tooltip-item">
+                  <span>推荐量:</span>
+                  <span class="tooltip-value">25g</span>
+                </div>
+                <div class="tooltip-percentage" id="vitaminPercent">0%</div>
+              </div>
+              <div class="bar-container">
+                <div class="bar light" id="vitaminBar" style="height: 0%"></div>
+              </div>
+              <div class="bar-label">维生素</div>
+            </div>
+            <div class="nutrition-bar" data-nutrition="fat">
+              <div class="nutrition-tooltip" id="fatTooltip">
+                <div class="tooltip-title">脂肪</div>
+                <div class="tooltip-item">
+                  <span>已摄入:</span>
+                  <span class="tooltip-value" id="fatActual">0g</span>
+                </div>
+                <div class="tooltip-item">
+                  <span>推荐量:</span>
+                  <span class="tooltip-value">60g</span>
+                </div>
+                <div class="tooltip-percentage" id="fatPercent">0%</div>
+              </div>
+              <div class="bar-container">
+                <div class="bar" id="fatBar" style="height: 0%"></div>
+              </div>
+              <div class="bar-label">脂肪</div>
+            </div>
+          </div>
+        </div>
 
-    <!-- 图片预览模态框 -->
-    <div class="modal" id="imageModal">
-      <div class="modal-content">
-        <button class="modal-close" onclick="closeModal()">×</button>
-        <img src="" alt="Preview" id="modalImage" />
+        <!-- 推荐食物 -->
+        <!-- <div class="recommendations-section">
+          <div class="today-section-title">推荐食物</div>
+          <table class="food-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Vegetable</th>
+                <th>Protein</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Juicy Apple</td>
+                <td>Fresh Salad</td>
+                <td>Lean Chicken</td>
+              </tr>
+              <tr>
+                <td>120 cal per 100g</td>
+                <td>150 cal per serving</td>
+                <td>165 cal per serving</td>
+              </tr>
+              <tr>
+                <td>Salad</td>
+                <td>Chicken Breast</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+        </div> -->
       </div>
     </div>
 
     <script>
-      const API_BASE_URL = "https://api.food-monitor.0nlinetech.littlemaster.fun";
+      const API_BASE_URL = "http://localhost:8001";
+      // "https://api.food-monitor.0nlinetech.littlemaster.fun";
+      let currentDate = new Date();
+      let selectedDate = new Date();
+      let calendarExpanded = false;
 
-      // 页面加载时获取图片列表
+      // 页面加载时初始化
       document.addEventListener("DOMContentLoaded", () => {
-        loadImages();
+        renderCalendar();
+        loadTodayData();
+        setupCalendarToggle();
+        setupNutritionTooltips();
         // 每30秒自动刷新一次
-        setInterval(loadImages, 30000);
+        setInterval(loadTodayData, 30000);
       });
 
-      // 加载图片列表
-      async function loadImages() {
-        const container = document.getElementById("galleryContainer");
+      // 设置营养详情气泡
+      function setupNutritionTooltips() {
+        const nutritionBars = document.querySelectorAll(".nutrition-bar");
+        let activeTooltip = null;
+
+        nutritionBars.forEach((bar) => {
+          bar.addEventListener("click", (e) => {
+            const tooltip = bar.querySelector(".nutrition-tooltip");
+
+            // 如果点击的是已激活的气泡，关闭它
+            if (
+              activeTooltip === tooltip &&
+              tooltip.classList.contains("show")
+            ) {
+              tooltip.classList.remove("show");
+              activeTooltip = null;
+            } else {
+              // 关闭其他气泡
+              if (activeTooltip) {
+                activeTooltip.classList.remove("show");
+              }
+              // 显示当前气泡
+              tooltip.classList.add("show");
+              activeTooltip = tooltip;
+            }
+          });
+        });
+
+        // 点击其他区域关闭气泡
+        document.addEventListener("click", (e) => {
+          if (!e.target.closest(".nutrition-bar") && activeTooltip) {
+            activeTooltip.classList.remove("show");
+            activeTooltip = null;
+          }
+        });
+      }
+
+      // 设置日历折叠/展开功能
+      function setupCalendarToggle() {
+        const calendarSection = document.getElementById("calendarSection");
+        const container = document.getElementById("calendarDaysContainer");
+
+        calendarSection.addEventListener("click", (e) => {
+          // 如果点击的是日期，不触发折叠
+          if (e.target.classList.contains("calendar-day")) {
+            return;
+          }
+
+          calendarExpanded = !calendarExpanded;
+          if (calendarExpanded) {
+            container.classList.add("expanded");
+          } else {
+            container.classList.remove("expanded");
+          }
+        });
+      }
+
+      // 渲染日历
+      function renderCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        // 更新月份显示
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        document.getElementById(
+          "calendarHeader"
+        ).textContent = `${monthNames[month]}, ${year}`;
+
+        // 获取月份第一天和最后一天
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+
+        // 获取第一天是星期几 (0=Sunday, 调整为 0=Monday)
+        let firstDayOfWeek = firstDay.getDay();
+        firstDayOfWeek = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+
+        const calendarDays = document.getElementById("calendarDays");
+        calendarDays.innerHTML = "";
+
+        // 填充上个月的日期
+        const prevMonthDays = new Date(year, month, 0).getDate();
+        for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+          const day = document.createElement("div");
+          day.className = "calendar-day disabled";
+          day.textContent = prevMonthDays - i;
+          calendarDays.appendChild(day);
+        }
+
+        // 填充本月日期
+        const today = new Date();
+        for (let i = 1; i <= daysInMonth; i++) {
+          const day = document.createElement("div");
+          day.className = "calendar-day";
+          day.textContent = i;
+
+          // 标记今天
+          if (
+            year === today.getFullYear() &&
+            month === today.getMonth() &&
+            i === today.getDate()
+          ) {
+            day.classList.add("today");
+          }
+
+          // 添加点击事件
+          day.addEventListener("click", () => {
+            selectedDate = new Date(year, month, i);
+            loadDayData(selectedDate);
+          });
+
+          calendarDays.appendChild(day);
+        }
+
+        // 填充下个月的日期
+        const remainingDays = 42 - (firstDayOfWeek + daysInMonth);
+        for (let i = 1; i <= remainingDays; i++) {
+          const day = document.createElement("div");
+          day.className = "calendar-day disabled";
+          day.textContent = i;
+          calendarDays.appendChild(day);
+        }
+      }
+
+      // 加载今日数据
+      async function loadTodayData() {
+        const today = new Date();
+        const dateStr = formatDate(today);
+        await loadDayData(today, dateStr);
+      }
+
+      // 加载指定日期数据
+      async function loadDayData(date, dateStr = null) {
+        if (!dateStr) {
+          dateStr = formatDate(date);
+        }
 
         try {
-          const response = await fetch(`${API_BASE_URL}/api/images`);
+          // 获取当天营养数据
+          const response = await fetch(
+            `${API_BASE_URL}/api/nutrition/daily/${dateStr}`
+          );
           const data = await response.json();
 
-          if (data.images && data.images.length > 0) {
-            // 按上传时间倒序排序
-            data.images.sort(
-              (a, b) => new Date(b.upload_time) - new Date(a.upload_time)
-            );
+          if (data.status === "success") {
+            // 更新今日目录
+            updateTodayMeals(data.foods || []);
 
-            // 更新图片数量
-            document.getElementById(
-              "imageCount"
-            ).textContent = `共 ${data.images.length} 餐`;
-
-            // 按日期分组
-            const groupedByDate = groupImagesByDate(data.images);
-
-            // 渲染分组后的图片
-            container.innerHTML = renderGroupedImages(groupedByDate);
-          } else {
-            // 空状态
-            container.innerHTML = `
-                        <div class="empty-state">
-                            <div class="empty-state-icon"><i class="fas fa-bowl-food"></i></div>
-                            <div class="empty-state-text">今天还没有用餐记录</div>
-                            <div class="empty-state-hint">等待上传用餐照片...</div>
-                        </div>
-                    `;
-            document.getElementById("imageCount").textContent = "共 0 餐";
+            // 更新营养图表
+            updateNutritionChart(data.total_nutrition || {});
           }
         } catch (error) {
-          console.error("加载图片失败:", error);
-          container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                        <div class="empty-state-text">加载失败</div>
-                        <div class="empty-state-hint">请检查摄像头连接或网络状态</div>
-                    </div>
-                `;
+          console.error("加载数据失败:", error);
         }
       }
 
-      // 创建图片卡片
-      function createImageCard(image) {
-        const imageUrl = `${API_BASE_URL}${image.download_url}`;
-        const uploadDate = new Date(image.upload_time);
-        const today = new Date();
-        const isToday = uploadDate.toDateString() === today.toDateString();
-        const uploadTime = uploadDate.toLocaleString("zh-CN", {
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-        });
-        const timePrefix = isToday ? "今天 " : "";
+      // 更新今日用餐
+      function updateTodayMeals(foods) {
+        const mealsGrid = document.getElementById("todayMeals");
 
-        return `
-                <div class="image-card">
-                    <div class="image-wrapper">
-                        <img src="${imageUrl}" alt="${image.original_name}" 
-                             onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ffb6c1%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23ff6b9d%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2218%22%3E加载失败%3C/text%3E%3C/svg%3E'">
-                    </div>
-                    <div class="image-info">
-                        <div class="image-filename" title="${image.original_name}">
-                            <i class="fas fa-utensils"></i> ${image.original_name}
-                        </div>
-                        <div class="image-meta">
-                            <div class="image-time">
-                                <span><i class="far fa-clock"></i></span>
-                                <span>${timePrefix}${uploadTime}</span>
-                            </div>
-                        </div>
-                        <div class="image-actions">
-                            <button class="btn-small btn-view" onclick="viewImage('${imageUrl}')">
-                                <i class="fas fa-eye"></i> 查看
-                            </button>
-                            <button class="btn-small btn-download" onclick="downloadImage('${imageUrl}', '${image.original_name}')">
-                                <i class="fas fa-download"></i> 下载
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-      }
-
-      // 按日期分组图片
-      function groupImagesByDate(images) {
-        const groups = {};
-        const today = new Date();
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-
-        images.forEach((image) => {
-          const uploadDate = new Date(image.upload_time);
-          const dateKey = uploadDate.toLocaleDateString("zh-CN");
-
-          if (!groups[dateKey]) {
-            groups[dateKey] = {
-              date: uploadDate,
-              dateKey: dateKey,
-              images: [],
-            };
-          }
-          groups[dateKey].images.push(image);
-        });
-
-        return Object.values(groups).sort((a, b) => b.date - a.date);
-      }
-
-      // 渲染分组后的图片
-      function renderGroupedImages(groups) {
-        const today = new Date().toLocaleDateString("zh-CN");
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = yesterday.toLocaleDateString("zh-CN");
-
-        return groups
-          .map((group) => {
-            let dateLabel = group.dateKey;
-            if (group.dateKey === today) {
-              dateLabel = "今天";
-            } else if (group.dateKey === yesterdayStr) {
-              dateLabel = "昨天";
-            }
-
-            return `
-            <div class="date-divider">
-              <i class="fas fa-calendar-day"></i>
-              <span class="date-divider-text">${dateLabel}</span>
-              <span class="date-divider-count">${group.images.length}餐</span>
+        if (foods.length === 0) {
+          mealsGrid.innerHTML = `
+            <div class="meal-card">
+              <div class="meal-time">暂无记录</div>
             </div>
-            <div class="gallery-grid">
-              ${group.images.map((image) => createImageCard(image)).join("")}
+            <div class="meal-card">
+              <div class="meal-time">暂无记录</div>
             </div>
           `;
-          })
-          .join("");
-      }
-
-      // 查看图片
-      function viewImage(url) {
-        const modal = document.getElementById("imageModal");
-        const modalImage = document.getElementById("modalImage");
-        modalImage.src = url;
-        modal.classList.add("show");
-      }
-
-      // 关闭模态框
-      function closeModal() {
-        const modal = document.getElementById("imageModal");
-        modal.classList.remove("show");
-      }
-
-      // 点击模态框背景关闭
-      document.getElementById("imageModal").addEventListener("click", (e) => {
-        if (e.target.id === "imageModal") {
-          closeModal();
+          return;
         }
-      });
 
-      // ESC键关闭模态框
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") {
-          closeModal();
-        }
-      });
+        mealsGrid.innerHTML = "";
 
-      // 下载图片
-      async function downloadImage(url, filename) {
-        try {
-          const response = await fetch(url);
-          const blob = await response.blob();
-          const downloadUrl = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = downloadUrl;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(downloadUrl);
-          showNotification("下载成功！", "success");
-        } catch (error) {
-          console.error("下载失败:", error);
-          showNotification("下载失败", "error");
-        }
+        // 显示所有用餐记录（可左右滑动）
+        foods.forEach((meal) => {
+          const imageUrl = `${API_BASE_URL}/api/image/${meal.filename}`;
+          const uploadTime = new Date(meal.upload_time);
+          const timeStr = uploadTime.toLocaleTimeString("zh-CN", {
+            hour: "2-digit",
+            minute: "2-digit",
+          });
+
+          const mealCard = document.createElement("div");
+          mealCard.className = "meal-card has-image";
+          mealCard.innerHTML = `
+            <div class="meal-card-image" style="background-image: url(${imageUrl})"></div>
+            <div class="meal-time">${uploadTime.getFullYear()}年${
+            uploadTime.getMonth() + 1
+          }月${uploadTime.getDate()}日 ${timeStr}</div>
+          `;
+          mealsGrid.appendChild(mealCard);
+        });
       }
 
-      // 显示通知
-      function showNotification(message, type = "success") {
-        const notification = document.getElementById("notification");
-        notification.className = `notification ${type} show`;
-        notification.querySelector(".notification-message").textContent =
-          message;
+      // 更新营养图表
+      function updateNutritionChart(nutrition) {
+        // 设置推荐值（可以根据实际需求调整）
+        const recommended = {
+          protein: 60, // 60g
+          carbohydrates: 300, // 300g
+          vitamins: 25, // 假设维生素总值(纤维)
+          fat: 60, // 60g
+        };
 
-        setTimeout(() => {
-          notification.classList.remove("show");
-        }, 3000);
+        const proteinValue = nutrition.protein || 0;
+        const carbsValue = nutrition.carbohydrates || 0;
+        const vitaminValue = nutrition.fiber || 0;
+        const fatValue = nutrition.fat || 0;
+
+        // 计算百分比并更新柱状图
+        const proteinPercent = Math.min(
+          (proteinValue / recommended.protein) * 100,
+          100
+        );
+        const carbsPercent = Math.min(
+          (carbsValue / recommended.carbohydrates) * 100,
+          100
+        );
+        const fatPercent = Math.min((fatValue / recommended.fat) * 100, 100);
+        const vitaminPercent = Math.min(
+          (vitaminValue / recommended.vitamins) * 100,
+          100
+        );
+
+        // 更新柱状图高度
+        document.getElementById("proteinBar").style.height =
+          proteinPercent + "%";
+        document.getElementById("carbsBar").style.height = carbsPercent + "%";
+        document.getElementById("vitaminBar").style.height =
+          vitaminPercent + "%";
+        document.getElementById("fatBar").style.height = fatPercent + "%";
+
+        // 更新气泡数据
+        document.getElementById("proteinActual").textContent =
+          proteinValue.toFixed(1) + "g";
+        document.getElementById("proteinPercent").textContent =
+          Math.round(proteinPercent) + "%";
+
+        document.getElementById("carbsActual").textContent =
+          carbsValue.toFixed(1) + "g";
+        document.getElementById("carbsPercent").textContent =
+          Math.round(carbsPercent) + "%";
+
+        document.getElementById("vitaminActual").textContent =
+          vitaminValue.toFixed(1) + "g";
+        document.getElementById("vitaminPercent").textContent =
+          Math.round(vitaminPercent) + "%";
+
+        document.getElementById("fatActual").textContent =
+          fatValue.toFixed(1) + "g";
+        document.getElementById("fatPercent").textContent =
+          Math.round(fatPercent) + "%";
+      }
+
+      // 格式化日期为 YYYY-MM-DD
+      function formatDate(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
       }
     </script>
   </body>
