@@ -32,13 +32,27 @@
         overflow-y: auto;
       }
 
-      /* 顶部标题栏 */
+      /* 内容居中容器 */
+      .content-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
       .header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 20px 30px;
         background: #fffed7;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       .header h1 {
@@ -67,6 +81,33 @@
       /* 主内容区 */
       .main-content {
         padding: 20px 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* 桌面端布局 */
+      .desktop-layout {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 25px;
+      }
+
+      @media (min-width: 1024px) {
+        .desktop-layout {
+          grid-template-columns: 400px 1fr;
+        }
+
+        .calendar-section {
+          grid-row: 1 / 3;
+        }
+
+        .meals-section {
+          grid-column: 2;
+        }
+
+        .nutrition-section {
+          grid-column: 2;
+        }
       }
 
       /* 日历区域 */
@@ -167,6 +208,24 @@
         display: flex;
         gap: 15px;
         padding-bottom: 10px;
+      }
+
+      @media (min-width: 768px) {
+        .meals-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+          gap: 20px;
+        }
+
+        .meals-container {
+          overflow-x: visible;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .meals-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
 
       .meal-card {
@@ -561,16 +620,64 @@
           padding: 15px 20px;
         }
 
-        .meals-grid {
-          grid-template-columns: 1fr;
-        }
-
         .nutrition-grid {
           grid-template-columns: 1fr;
         }
 
         .food-detail-content {
           margin: 10px;
+        }
+
+        .meal-card {
+          min-width: 180px;
+        }
+      }
+
+      /* 桌面端优化 */
+      @media (min-width: 1024px) {
+        .header h1 {
+          font-size: 2.2rem;
+        }
+
+        .main-content {
+          padding: 30px 40px;
+        }
+
+        .calendar-section {
+          position: sticky;
+          top: 20px;
+          align-self: start;
+        }
+
+        .meal-card {
+          min-width: auto;
+          width: 100%;
+        }
+
+        .nutrition-chart {
+          height: 250px;
+        }
+
+        .bar-container {
+          height: 220px;
+        }
+
+        .food-detail-content {
+          max-width: 600px;
+        }
+
+        .nutrition-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @media (min-width: 1440px) {
+        .main-content {
+          max-width: 1400px;
+        }
+
+        .header-content {
+          max-width: 1400px;
         }
       }
     </style>
@@ -579,118 +686,132 @@
     <div class="container">
       <!-- 顶部标题 -->
       <div class="header">
-        <h1>Hi, <span id="userName">毕钰</span></h1>
-        <!-- <div class="menu-icon">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div> -->
+        <div class="header-content">
+          <h1>Hi, <span id="userName">毕钰</span></h1>
+          <!-- <div class="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div> -->
+        </div>
       </div>
 
       <!-- 主内容区 -->
       <div class="main-content">
-        <!-- 日历 -->
-        <div class="calendar-section" id="calendarSection">
-          <div class="calendar-header" id="calendarHeader">December, 2025</div>
-          <div class="calendar-grid">
-            <div class="calendar-day-header">Mon</div>
-            <div class="calendar-day-header">Tue</div>
-            <div class="calendar-day-header">Wed</div>
-            <div class="calendar-day-header">Thu</div>
-            <div class="calendar-day-header">Fri</div>
-            <div class="calendar-day-header">Sat</div>
-            <div class="calendar-day-header">Sun</div>
+        <div class="desktop-layout">
+          <!-- 日历 -->
+          <div class="calendar-section" id="calendarSection">
+            <div class="calendar-header" id="calendarHeader">
+              December, 2025
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-day-header">Mon</div>
+              <div class="calendar-day-header">Tue</div>
+              <div class="calendar-day-header">Wed</div>
+              <div class="calendar-day-header">Thu</div>
+              <div class="calendar-day-header">Fri</div>
+              <div class="calendar-day-header">Sat</div>
+              <div class="calendar-day-header">Sun</div>
+            </div>
+            <div class="calendar-days-container" id="calendarDaysContainer">
+              <div class="calendar-grid" id="calendarDays"></div>
+            </div>
           </div>
-          <div class="calendar-days-container" id="calendarDaysContainer">
-            <div class="calendar-grid" id="calendarDays"></div>
-          </div>
-        </div>
 
-        <!-- 今日目录 -->
-        <div class="today-section-title">今日目录</div>
-        <div class="meals-container">
-          <div class="meals-grid" id="todayMeals">
-            <div class="meal-card">
-              <div class="meal-time">暂无记录</div>
+          <div class="right-content">
+            <!-- 今日目录 -->
+            <div class="meals-section">
+              <div class="today-section-title">今日目录</div>
+              <div class="meals-container">
+                <div class="meals-grid" id="todayMeals">
+                  <div class="meal-card">
+                    <div class="meal-time">暂无记录</div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <!-- 今日营养概览 -->
-        <div class="nutrition-section">
-          <div class="today-section-title">今日营养概览</div>
-          <div class="nutrition-chart">
-            <div class="nutrition-bar" data-nutrition="protein">
-              <div class="nutrition-tooltip" id="proteinTooltip">
-                <div class="tooltip-title">蛋白质</div>
-                <div class="tooltip-item">
-                  <span>已摄入:</span>
-                  <span class="tooltip-value" id="proteinActual">0g</span>
+            <!-- 今日营养概览 -->
+            <div class="nutrition-section">
+              <div class="today-section-title">今日营养概览</div>
+              <div class="nutrition-chart">
+                <div class="nutrition-bar" data-nutrition="protein">
+                  <div class="nutrition-tooltip" id="proteinTooltip">
+                    <div class="tooltip-title">蛋白质</div>
+                    <div class="tooltip-item">
+                      <span>已摄入:</span>
+                      <span class="tooltip-value" id="proteinActual">0g</span>
+                    </div>
+                    <div class="tooltip-item">
+                      <span>推荐量:</span>
+                      <span class="tooltip-value">60g</span>
+                    </div>
+                    <div class="tooltip-percentage" id="proteinPercent">0%</div>
+                  </div>
+                  <div class="bar-container">
+                    <div class="bar" id="proteinBar" style="height: 0%"></div>
+                  </div>
+                  <div class="bar-label">蛋白质</div>
                 </div>
-                <div class="tooltip-item">
-                  <span>推荐量:</span>
-                  <span class="tooltip-value">60g</span>
+                <div class="nutrition-bar" data-nutrition="carbs">
+                  <div class="nutrition-tooltip" id="carbsTooltip">
+                    <div class="tooltip-title">碳水化合物</div>
+                    <div class="tooltip-item">
+                      <span>已摄入:</span>
+                      <span class="tooltip-value" id="carbsActual">0g</span>
+                    </div>
+                    <div class="tooltip-item">
+                      <span>推荐量:</span>
+                      <span class="tooltip-value">300g</span>
+                    </div>
+                    <div class="tooltip-percentage" id="carbsPercent">0%</div>
+                  </div>
+                  <div class="bar-container">
+                    <div class="bar" id="carbsBar" style="height: 0%"></div>
+                  </div>
+                  <div class="bar-label">碳水化合物</div>
                 </div>
-                <div class="tooltip-percentage" id="proteinPercent">0%</div>
-              </div>
-              <div class="bar-container">
-                <div class="bar" id="proteinBar" style="height: 0%"></div>
-              </div>
-              <div class="bar-label">蛋白质</div>
-            </div>
-            <div class="nutrition-bar" data-nutrition="carbs">
-              <div class="nutrition-tooltip" id="carbsTooltip">
-                <div class="tooltip-title">碳水化合物</div>
-                <div class="tooltip-item">
-                  <span>已摄入:</span>
-                  <span class="tooltip-value" id="carbsActual">0g</span>
+                <div class="nutrition-bar" data-nutrition="vitamin">
+                  <div class="nutrition-tooltip" id="vitaminTooltip">
+                    <div class="tooltip-title">维生素</div>
+                    <div class="tooltip-item">
+                      <span>已摄入:</span>
+                      <span class="tooltip-value" id="vitaminActual">0g</span>
+                    </div>
+                    <div class="tooltip-item">
+                      <span>推荐量:</span>
+                      <span class="tooltip-value">25g</span>
+                    </div>
+                    <div class="tooltip-percentage" id="vitaminPercent">0%</div>
+                  </div>
+                  <div class="bar-container">
+                    <div
+                      class="bar light"
+                      id="vitaminBar"
+                      style="height: 0%"
+                    ></div>
+                  </div>
+                  <div class="bar-label">维生素</div>
                 </div>
-                <div class="tooltip-item">
-                  <span>推荐量:</span>
-                  <span class="tooltip-value">300g</span>
+                <div class="nutrition-bar" data-nutrition="fat">
+                  <div class="nutrition-tooltip" id="fatTooltip">
+                    <div class="tooltip-title">脂肪</div>
+                    <div class="tooltip-item">
+                      <span>已摄入:</span>
+                      <span class="tooltip-value" id="fatActual">0g</span>
+                    </div>
+                    <div class="tooltip-item">
+                      <span>推荐量:</span>
+                      <span class="tooltip-value">60g</span>
+                    </div>
+                    <div class="tooltip-percentage" id="fatPercent">0%</div>
+                  </div>
+                  <div class="bar-container">
+                    <div class="bar" id="fatBar" style="height: 0%"></div>
+                  </div>
+                  <div class="bar-label">脂肪</div>
                 </div>
-                <div class="tooltip-percentage" id="carbsPercent">0%</div>
               </div>
-              <div class="bar-container">
-                <div class="bar" id="carbsBar" style="height: 0%"></div>
-              </div>
-              <div class="bar-label">碳水化合物</div>
-            </div>
-            <div class="nutrition-bar" data-nutrition="vitamin">
-              <div class="nutrition-tooltip" id="vitaminTooltip">
-                <div class="tooltip-title">维生素</div>
-                <div class="tooltip-item">
-                  <span>已摄入:</span>
-                  <span class="tooltip-value" id="vitaminActual">0g</span>
-                </div>
-                <div class="tooltip-item">
-                  <span>推荐量:</span>
-                  <span class="tooltip-value">25g</span>
-                </div>
-                <div class="tooltip-percentage" id="vitaminPercent">0%</div>
-              </div>
-              <div class="bar-container">
-                <div class="bar light" id="vitaminBar" style="height: 0%"></div>
-              </div>
-              <div class="bar-label">维生素</div>
-            </div>
-            <div class="nutrition-bar" data-nutrition="fat">
-              <div class="nutrition-tooltip" id="fatTooltip">
-                <div class="tooltip-title">脂肪</div>
-                <div class="tooltip-item">
-                  <span>已摄入:</span>
-                  <span class="tooltip-value" id="fatActual">0g</span>
-                </div>
-                <div class="tooltip-item">
-                  <span>推荐量:</span>
-                  <span class="tooltip-value">60g</span>
-                </div>
-                <div class="tooltip-percentage" id="fatPercent">0%</div>
-              </div>
-              <div class="bar-container">
-                <div class="bar" id="fatBar" style="height: 0%"></div>
-              </div>
-              <div class="bar-label">脂肪</div>
             </div>
           </div>
         </div>
@@ -792,8 +913,9 @@
     </div>
 
     <script>
-      const API_BASE_URL = "http://localhost:8001";
-      // "https://api.food-monitor.0nlinetech.littlemaster.fun";
+      const API_BASE_URL = 
+      //"http://localhost:8001";
+      "https://api.food-monitor.0nlinetech.littlemaster.fun";
       let currentDate = new Date();
       let selectedDate = new Date();
       let calendarExpanded = false;
