@@ -1,7 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import os
 import json
 from pathlib import Path
@@ -281,8 +281,9 @@ async def upload_image(file: UploadFile = File(...)):
         with open(file_path, "wb") as f:
             f.write(contents)
         
-        # 记录上传时间和文件信息
-        now = datetime.now()
+        # 记录上传时间和文件信息（使用北京时间 UTC+8）
+        beijing_tz = timezone(timedelta(hours=8))
+        now = datetime.now(beijing_tz)
         upload_time = now.isoformat()
         upload_date = now.strftime("%Y-%m-%d")  # 添加日期字段便于筛选
         metadata = load_metadata()
