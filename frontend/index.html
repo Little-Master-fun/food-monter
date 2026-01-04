@@ -192,6 +192,7 @@
       }
 
       .meals-container {
+        width: calc(100vw - 40px);
         overflow-x: auto;
         overflow-y: hidden;
         margin-bottom: 25px;
@@ -208,6 +209,8 @@
         display: flex;
         gap: 15px;
         padding-bottom: 10px;
+        width: max-content;
+        min-width: 100%;
       }
 
       @media (min-width: 768px) {
@@ -215,6 +218,8 @@
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
           gap: 20px;
+          width: 100%;
+          min-width: auto;
         }
 
         .meals-container {
@@ -913,9 +918,9 @@
     </div>
 
     <script>
-      const API_BASE_URL = 
-      //"http://localhost:8001";
-      "https://api.food-monitor.0nlinetech.littlemaster.fun";
+      const API_BASE_URL =
+        //"http://localhost:8001";
+        "https://api.food-monitor.0nlinetech.littlemaster.fun";
       let currentDate = new Date();
       let selectedDate = new Date();
       let calendarExpanded = false;

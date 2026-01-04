@@ -53,9 +53,8 @@ def encode_image_to_base64(image_path: str) -> str:
 
 async def recognize_food_with_ai(image_path: str) -> dict:
     """
-    使用AI API识别食物
+    使用chat5.1的api识别食物
     返回食物名称、描述和营养数据
-    支持多模态和纯文本两种模式
     """
     try:
         # 检查API是否支持视觉模型
@@ -63,7 +62,7 @@ async def recognize_food_with_ai(image_path: str) -> dict:
         use_vision = os.getenv("USE_VISION_API", "false").lower() == "true"
         
         if use_vision:
-            # 使用多模态API（支持图片输入）
+            # 使用多模态API输入图片
             base64_image = encode_image_to_base64(image_path)
             
             response = client.chat.completions.create(
@@ -81,44 +80,44 @@ async def recognize_food_with_ai(image_path: str) -> dict:
                             {
                                 "type": "text",
                                 "text": """请识别这张图片中的食物，并以JSON格式返回以下信息。所有营养数据必须是数字类型，不要带单位：
-{
-  "food_name": "食物名称（中文）",
-  "description": "食物的详细描述（包括外观、烹饪方式等）",
-  "estimated_weight": 估计的食物重量（克，纯数字），
-  "nutrition_per_100g": {
-    "protein": 蛋白质含量（克/100克，纯数字），
-    "carbohydrates": 碳水化合物含量（克/100克，纯数字），
-    "fat": 脂肪含量（克/100克，纯数字），
-    "calories": 热量（千卡/100克，纯数字），
-    "fiber": 膳食纤维（克/100克，纯数字），
-    "sodium": 钠含量（毫克/100克，纯数字），
-    "sugar": 糖含量（克/100克，纯数字）
-  },
-  "vitamins": ["维生素A", "维生素C", "维生素E"]  // 主要维生素列表
-}
+                                {
+                                "food_name": "食物名称（中文）",
+                                "description": "食物的详细描述（包括外观、烹饪方式等）",
+                                "estimated_weight": 估计的食物重量（克，纯数字），
+                                "nutrition_per_100g": {
+                                    "protein": 蛋白质含量（克/100克，纯数字），
+                                    "carbohydrates": 碳水化合物含量（克/100克，纯数字），
+                                    "fat": 脂肪含量（克/100克，纯数字），
+                                    "calories": 热量（千卡/100克，纯数字），
+                                    "fiber": 膳食纤维（克/100克，纯数字），
+                                    "sodium": 钠含量（毫克/100克，纯数字），
+                                    "sugar": 糖含量（克/100克，纯数字）
+                                },
+                                "vitamins": ["维生素A", "维生素C", "维生素E"]  // 主要维生素列表
+                                }
 
-注意：
-1. 所有营养数据必须是纯数字，不要包含单位
-2. estimated_weight是估计这份食物的总重量（克）
-3. 请只返回JSON格式的数据，不要添加其他说明文字
-4. 如果图片中没有食物，请返回 {"error": "未识别到食物"}
+                                注意：
+                                1. 所有营养数据必须是纯数字，不要包含单位
+                                2. estimated_weight是估计这份食物的总重量（克）
+                                3. 请只返回JSON格式的数据，不要添加其他说明文字
+                                4. 如果图片中没有食物，请返回 {"error": "未识别到食物"}
 
-示例：
-{
-  "food_name": "宫保鸡丁",
-  "description": "一道经典川菜...",
-  "estimated_weight": 250,
-  "nutrition_per_100g": {
-    "protein": 18.5,
-    "carbohydrates": 12.3,
-    "fat": 15.8,
-    "calories": 280,
-    "fiber": 2.5,
-    "sodium": 450,
-    "sugar": 8.2
-  },
-  "vitamins": ["维生素A", "维生素C", "维生素E"]
-}"""
+                                示例：
+                                {
+                                "food_name": "宫保鸡丁",
+                                "description": "一道经典川菜...",
+                                "estimated_weight": 250,
+                                "nutrition_per_100g": {
+                                    "protein": 18.5,
+                                    "carbohydrates": 12.3,
+                                    "fat": 15.8,
+                                    "calories": 280,
+                                    "fiber": 2.5,
+                                    "sodium": 450,
+                                    "sugar": 8.2
+                                },
+                                "vitamins": ["维生素A", "维生素C", "维生素E"]
+                                }"""
                             }
                         ]
                     }
@@ -175,7 +174,7 @@ async def recognize_food_with_ai(image_path: str) -> dict:
                 "note": "当前API不支持图片识别，请在.env中设置USE_VISION_API=true并使用支持多模态的API"
             }
         
-        # 尝试解析JSON（去除可能的markdown代码块标记）
+        # 尝试解析JSON
         if content.startswith("```json"):
             content = content[7:-3].strip()
         elif content.startswith("```"):
@@ -194,7 +193,7 @@ async def recognize_food_with_ai(image_path: str) -> dict:
         nutrition = result.get("nutrition_per_100g", {})
         estimated_weight = result.get("estimated_weight", 0)
         
-        # 转换为数字（防止AI返回字符串）
+        # 转换为数字
         def to_float(value, default=0):
             try:
                 return float(value) if value else default
@@ -211,7 +210,7 @@ async def recognize_food_with_ai(image_path: str) -> dict:
             "sugar": to_float(nutrition.get("sugar", 0))
         }
         
-        # 计算总营养（基于估计重量）
+        # 计算总营养
         weight_factor = to_float(estimated_weight) / 100
         total_nutrition = {
             "protein": round(nutrition_per_100g["protein"] * weight_factor, 1),
@@ -291,7 +290,7 @@ async def upload_image(file: UploadFile = File(...)):
         # 使用AI识别食物
         food_info = await recognize_food_with_ai(str(file_path))
         
-        # 保存元数据（包括食物识别信息）
+        # 保存元数据
         metadata[saved_filename] = {
             "original_name": file.filename,
             "upload_time": upload_time,
